@@ -60,7 +60,8 @@ class SwiftyPDFKitTests: XCTestCase {
         }
         XCTAssertEqual(doc.numberOfPages, 6)
         XCTAssertEqual(doc.version, PDFVersion(major: 1, minor: 3))
-        print(doc.identifier)
+        XCTAssertEqual(doc.identifier.0.description, "<2592a7e9 5c829b0c b631af5b cbea464a>")
+        XCTAssertEqual(doc.identifier.1.description, "<7be1906b 2ff65000 bc5f166e 87791f4a>")
         XCTAssertEqual((doc.info["Title"] as! String), "asiabsdcon.fm5")
 
         let ols = doc.outlines
