@@ -55,11 +55,7 @@ extension CGPDFDocumentRef {
         if CGPDFArrayGetCount(a) == 2 {
             var s1 = CGPDFStringRef()
             var s2 = CGPDFStringRef()
-            let ok = withUnsafeMutablePointers(&s1, &s2) { v1, v2 in
-                return CGPDFArrayGetString(a, 0, v1)
-                    && CGPDFArrayGetString(a, 1, v2)
-            }
-            if ok {
+            if (withUnsafeMutablePointers(&s1, &s2) { CGPDFArrayGetString(a, 0, $0) && CGPDFArrayGetString(a, 1, $1) }) {
                 return (NSData(bytes: CGPDFStringGetBytePtr(s1), length: CGPDFStringGetLength(s1)),
                     NSData(bytes: CGPDFStringGetBytePtr(s2), length: CGPDFStringGetLength(s2)))
             }
