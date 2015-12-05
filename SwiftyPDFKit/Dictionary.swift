@@ -97,14 +97,61 @@ extension CGPDFDictionaryRef {
         return dict
     }
     
-    func dictionaryForKey(key: String) -> CGPDFDictionaryRef? {
+    subscript(dictionary key: String) -> CGPDFDictionaryRef? {
         return key.withCString { ckey in
             var value = CGPDFDictionaryRef()
-            if withUnsafeMutablePointer(&value, { return CGPDFDictionaryGetDictionary(self, ckey, $0)}) {
+            if withUnsafeMutablePointer(&value, { return CGPDFDictionaryGetDictionary(self, ckey, $0) }) {
                 return value
             } else {
                 return nil
             }
+        }
+    }
+    
+    subscript(string key: String) -> String? {
+        return key.withCString { ckey in
+            var value = CGPDFStringRef()
+            if withUnsafeMutablePointer(&value, { return CGPDFDictionaryGetString(self, ckey, $0) }) {
+                if let string = CGPDFStringCopyTextString(value) {
+                    return string as String
+                }
+            }
+            return nil
+        }
+    }
+    
+    public subscript(key: String) -> CGPDFObjectRef? {
+        return key.withCString { ckey in
+            var value = CGPDFObjectRef()
+            if withUnsafeMutablePointer(&value, { return CGPDFDictionaryGetObject(self, ckey, $0) }) {
+                return value
+            } else {
+                return nil
+            }
+        }
+    }
+    
+    func outlines() -> AnyGenerator<OutlineElement> {
+        var ctx = self[dictionary: "First"]
+        var stack = [CGPDFDictionaryRef]()
+        return anyGenerator {
+            guard let c = ctx else {
+                return nil
+            }
+
+            if let first = c[dictionary: "First"] {
+                stack.append(c)
+                ctx = first
+            } else if let nx = c[dictionary: "Next"] {
+                ctx = nx
+            } else if let lst = stack.last {
+                stack.removeLast()
+                ctx = lst[dictionary: "Next"]
+            } else {
+                ctx = nil
+            }
+
+            return OutlineElement(title: c[string: "Title"] ?? "", level: stack.count, destination: c[string: "Dest"] ?? "")
         }
     }
 }
