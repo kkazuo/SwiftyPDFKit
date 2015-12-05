@@ -44,8 +44,8 @@ extension CGPDFDocumentRef {
 
     public var version: PDFVersion {
         var version = PDFVersion(major: 0, minor: 0)
-        withUnsafeMutablePointers(&version.major, &version.minor) { v1, v2 in
-            CGPDFDocumentGetVersion(self, v1, v2)
+        withUnsafeMutablePointers(&version.major, &version.minor) {
+            CGPDFDocumentGetVersion(self, $0, $1)
         }
         return version
     }
