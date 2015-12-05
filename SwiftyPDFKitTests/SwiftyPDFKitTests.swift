@@ -66,5 +66,6 @@ class SwiftyPDFKitTests: XCTestCase {
 
         let ols = doc.outlines
         XCTAssertEqual(ols.count, 10)
+        XCTAssertEqual(ols[0].title, "Introduction")
     }
 }
