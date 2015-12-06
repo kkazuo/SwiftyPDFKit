@@ -48,7 +48,11 @@ extension CGPDFDictionaryRef {
                 }
                 dict[key] = bool
                 
-            case .Integer: 0
+            case .Integer:
+                var value = CGPDFInteger()
+                if withUnsafeMutablePointer(&value, { CGPDFObjectGetValue(obj, .Integer, $0) }) {
+                    dict[key] = value
+                }
                 
             case .Real: 0
                 
