@@ -118,6 +118,26 @@ public extension CGPDFDocumentRef {
         return ol.outlines(pageIndices, nameTable)
     }
 
+    public var allowsCopying: Bool {
+        return CGPDFDocumentAllowsCopying(self)
+    }
+
+    public var allowsPrinting: Bool {
+        return CGPDFDocumentAllowsPrinting(self)
+    }
+
+    public var isEncrypted: Bool {
+        return CGPDFDocumentIsEncrypted(self)
+    }
+
+    public var isUnlocked: Bool {
+        return CGPDFDocumentIsUnlocked(self)
+    }
+
+    public func unlock(password password: String) -> Bool {
+        return password.withCString { CGPDFDocumentUnlockWithPassword(self, $0) }
+    }
+
     private func infoString(key: String) -> String? {
         let info = CGPDFDocumentGetInfo(self)
         if info == nil {

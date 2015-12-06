@@ -66,6 +66,10 @@ class SwiftyPDFKitTests: XCTestCase {
         XCTAssertEqual(doc.title, "asiabsdcon.fm5")
         XCTAssertEqual(doc.subject, nil)
         XCTAssertEqual(doc.creator, "FrameMaker 6.0")
+        XCTAssertEqual(doc.isEncrypted, false)
+        XCTAssertEqual(doc.isUnlocked, true)
+        XCTAssertEqual(doc.allowsCopying, true)
+        XCTAssertEqual(doc.allowsPrinting, true)
 
         let ols = doc.outlines
         XCTAssertEqual(ols.count, 10)
