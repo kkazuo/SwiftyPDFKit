@@ -67,5 +67,8 @@ class SwiftyPDFKitTests: XCTestCase {
         let ols = doc.outlines
         XCTAssertEqual(ols.count, 10)
         XCTAssertEqual(ols[0].title, "Introduction")
+        XCTAssertEqual(ols[0].page, 2)
+        let page = CGPDFDocumentGetPage(doc, ols[0].page)
+        XCTAssert(page != nil)
     }
 }
