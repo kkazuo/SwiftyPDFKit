@@ -187,12 +187,19 @@ extension CGPDFDictionaryRef {
                 ctx = nil
             }
 
-            guard let dest = c[string: "Dest"],
+            guard let dest = c[string: "Dest"] ?? c[name: "Dest"],
                 let names = nameTable,
                 let p = nameTableSearch(names, key: dest),
                 let idx = pageIndices[p] else
             {
-                return OutlineElement(title: "", level: 0, page: 0)
+                guard let a = c[array: "Dest"] where 0 < a.count,
+                    let p = a[dictionary: 0],
+                    let t = p[name: "Type"] where t == "Page",
+                    let idx = pageIndices[p] else
+                {
+                    return OutlineElement(title: "", level: 0, page: 0)
+                }
+                return OutlineElement(title: c[string: "Title"] ?? "", level: stack.count, page: idx)
             }
             return OutlineElement(title: c[string: "Title"] ?? "", level: stack.count, page: idx)
         }.filter { $0.page != 0 }
