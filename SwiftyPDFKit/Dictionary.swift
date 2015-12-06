@@ -29,7 +29,7 @@ import Foundation
 import CoreGraphics
 
 extension CGPDFDictionaryRef {
-    
+
     func shallowCopy() -> PDFDictionaryType {
         let f: CGPDFDictionaryApplierFunction = { ckey, obj, ctx in
             var dict = UnsafeMutablePointer<PDFDictionaryType>(ctx).memory
@@ -39,7 +39,7 @@ extension CGPDFDictionaryRef {
             switch CGPDFObjectGetType(obj) {
             case .Null:
                 dict[key] = NSNull()
-                
+
             case .Boolean:
                 var bool = false
                 bool = withUnsafeMutablePointer(&bool) { v in
@@ -47,15 +47,15 @@ extension CGPDFDictionaryRef {
                     return v.memory
                 }
                 dict[key] = bool
-                
+
             case .Integer:
                 var value = CGPDFInteger()
                 if withUnsafeMutablePointer(&value, { CGPDFObjectGetValue(obj, .Integer, $0) }) {
                     dict[key] = value
                 }
-                
+
             case .Real: 0
-                
+
             case .Name:
                 var value: UnsafePointer<Int8> = nil
                 if withUnsafeMutablePointer(&value, { CGPDFObjectGetValue(obj, .Name, $0) }) {
@@ -63,7 +63,7 @@ extension CGPDFDictionaryRef {
                         dict[key] = s
                     }
                 }
-                
+
             case .String:
                 var ps = CGPDFStringRef()
                 let s: AnyObject? = withUnsafeMutablePointer(&ps) { v in
@@ -79,27 +79,27 @@ extension CGPDFDictionaryRef {
                 if let s = s {
                     dict[key] = s
                 }
-                
+
             case .Array:
                 dict[key] = [AnyObject]()
-                
+
             case .Dictionary:
                 dict[key] = PDFDictionaryType()
-                
+
             case .Stream:
                 dict[key] = PDFDictionaryType()
             }
-            
+
             UnsafeMutablePointer<PDFDictionaryType>(ctx).memory = dict
         }
-        
+
         var dict: PDFDictionaryType = PDFDictionaryType()
         withUnsafeMutablePointer(&dict) { ctx in
             CGPDFDictionaryApplyFunction(self, f, ctx)
         }
         return dict
     }
-    
+
     subscript(dictionary key: String) -> CGPDFDictionaryRef? {
         return key.withCString { ckey in
             var value = CGPDFDictionaryRef()
@@ -143,7 +143,7 @@ extension CGPDFDictionaryRef {
             return nil
         }
     }
-    
+
     subscript(string key: String) -> String? {
         return key.withCString { ckey in
             var value = CGPDFStringRef()
@@ -155,7 +155,7 @@ extension CGPDFDictionaryRef {
             return nil
         }
     }
-    
+
     subscript(date key: String) -> NSDate? {
         return key.withCString { ckey in
             var value = CGPDFStringRef()
@@ -167,7 +167,7 @@ extension CGPDFDictionaryRef {
             return nil
         }
     }
-    
+
     subscript(key: String) -> CGPDFObjectRef? {
         return key.withCString { ckey in
             var value = CGPDFObjectRef()
@@ -178,7 +178,7 @@ extension CGPDFDictionaryRef {
             }
         }
     }
-    
+
     func outlines(pageIndices: [CGPDFDictionaryRef : Int], _ nameTable: CGPDFDictionaryRef?) -> [OutlineElement] {
         var ctx = self[dictionary: "First"]
         var stack = [CGPDFDictionaryRef]()
@@ -216,13 +216,13 @@ extension CGPDFDictionaryRef {
             return OutlineElement(title: c[string: "Title"] ?? "", level: stack.count, page: idx)
         }.filter { $0.page != 0 }
     }
-    
+
     var pageIndices: [CGPDFObjectRef : Int] {
         var indices = [CGPDFDictionaryRef : Int]()
         (_, indices) = self.pageIndicesAux(start: 1, indices: indices)
         return indices
     }
-    
+
     private func pageIndicesAux(start start: Int, var indices: [CGPDFDictionaryRef : Int]) -> (Int, [CGPDFDictionaryRef : Int]) {
         guard let kids = self[array: "Kids"] else {
             return (start, indices)

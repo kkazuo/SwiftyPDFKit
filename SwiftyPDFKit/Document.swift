@@ -29,11 +29,11 @@ import Foundation
 import CoreGraphics
 
 public extension CGPDFDocumentRef {
-    
+
     public var numberOfPages: Int {
         return CGPDFDocumentGetNumberOfPages(self)
     }
-    
+
     public var catalog: PDFDictionaryType {
         return CGPDFDocumentGetCatalog(self).shallowCopy()
     }
@@ -111,7 +111,7 @@ public extension CGPDFDocumentRef {
         {
             return []
         }
-        
+
         let pageIndices = pages.pageIndices
         let nameTable = catalog[dictionary: "Names"]?[dictionary: "Dests"]
 
