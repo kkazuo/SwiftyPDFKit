@@ -81,18 +81,19 @@ extension CGPDFDictionaryRef {
                 }
                 
             case .Array:
-                dict[key] = []
+                dict[key] = [AnyObject]()
                 
             case .Dictionary:
-                dict[key] = [:]
+                dict[key] = PDFDictionaryType()
                 
-            case .Stream: 0
+            case .Stream:
+                dict[key] = PDFDictionaryType()
             }
             
             UnsafeMutablePointer<PDFDictionaryType>(ctx).memory = dict
         }
         
-        var dict: PDFDictionaryType = [:]
+        var dict: PDFDictionaryType = PDFDictionaryType()
         withUnsafeMutablePointer(&dict) { ctx in
             CGPDFDictionaryApplyFunction(self, f, ctx)
         }
