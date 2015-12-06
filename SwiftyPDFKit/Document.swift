@@ -65,12 +65,16 @@ extension CGPDFDocumentRef {
     
     public var outlines: [OutlineElement] {
         let catalog = CGPDFDocumentGetCatalog(self)
-        guard let ol = catalog[dictionary: "Outlines"] else {
+        guard
+            let ol = catalog[dictionary: "Outlines"],
+            let pages = catalog[dictionary: "Pages"] else
+        {
             return []
         }
+        
+        let pageIndices = pages.pageIndices
+        let nameTable = catalog[dictionary: "Names"]?[dictionary: "Dests"]
 
-        return ol.outlines()
-            // decoupling from self.
-            .map { $0 }
+        return ol.outlines(pageIndices, nameTable)
     }
 }

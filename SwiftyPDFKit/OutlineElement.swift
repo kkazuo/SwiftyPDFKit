@@ -27,9 +27,15 @@ THE SOFTWARE.
 
 import Foundation
 
+/// PDFアウトラインの要素
 public struct OutlineElement {
 
+    /// アウトラインのタイトル
     var title: String
+
+    /// アウトラインのルートからの深さ (0開始)
     var level: Int
-    var destination: String
+
+    /// ページ番号 (1開始)
+    var page: Int
 }

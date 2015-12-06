@@ -156,7 +156,7 @@ extension CGPDFDictionaryRef {
         }
     }
     
-    public subscript(key: String) -> CGPDFObjectRef? {
+    subscript(key: String) -> CGPDFObjectRef? {
         return key.withCString { ckey in
             var value = CGPDFObjectRef()
             if withUnsafeMutablePointer(&value, { return CGPDFDictionaryGetObject(self, ckey, $0) }) {
@@ -167,7 +167,7 @@ extension CGPDFDictionaryRef {
         }
     }
     
-    func outlines() -> AnyGenerator<OutlineElement> {
+    func outlines(pageIndices: [CGPDFDictionaryRef : Int], _ nameTable: CGPDFDictionaryRef?) -> [OutlineElement] {
         var ctx = self[dictionary: "First"]
         var stack = [CGPDFDictionaryRef]()
         return anyGenerator {
@@ -187,7 +187,115 @@ extension CGPDFDictionaryRef {
                 ctx = nil
             }
 
-            return OutlineElement(title: c[string: "Title"] ?? "", level: stack.count, destination: c[string: "Dest"] ?? "")
-        }
+            guard let dest = c[string: "Dest"],
+                let names = nameTable,
+                let p = nameTableSearch(names, key: dest),
+                let idx = pageIndices[p] else
+            {
+                return OutlineElement(title: "", level: 0, page: 0)
+            }
+            return OutlineElement(title: c[string: "Title"] ?? "", level: stack.count, page: idx)
+        }.filter { $0.page != 0 }
     }
+    
+    var pageIndices: [CGPDFObjectRef : Int] {
+        var indices = [CGPDFDictionaryRef : Int]()
+        (_, indices) = self.pageIndicesAux(start: 1, indices: indices)
+        return indices
+    }
+    
+    private func pageIndicesAux(start start: Int, var indices: [CGPDFDictionaryRef : Int]) -> (Int, [CGPDFDictionaryRef : Int]) {
+        guard let kids = self[array: "Kids"] else {
+            return (start, indices)
+        }
+        let max = kids.count
+        var st = start
+        for var i = 0; i < max; i++ {
+            guard let k = kids[dictionary: i], t = k[name: "Type"] else {
+                continue
+            }
+            if t == "Page" {
+                indices[k] = st++
+            } else if t == "Pages" {
+                (st, indices) = k.pageIndicesAux(start: st, indices: indices)
+            }
+        }
+        return (st, indices)
+    }
+}
+
+private func nameTableSearch(dict: CGPDFDictionaryRef, key: String) -> CGPDFDictionaryRef? {
+    var dict = dict
+    repeat {
+        guard let kids = dict[array: "Kids"] where 0 < kids.count else {
+            return nil
+        }
+
+        var min = 0
+        var max = kids.count - 1
+        var pivot = max / 2
+        kids: repeat {
+            guard let kid = kids[dictionary: pivot], order = nameTableOrder(kid, key: key) else {
+                return nil
+            }
+            switch order {
+            case NSComparisonResult.OrderedAscending:
+                max = pivot - 1
+                pivot = min + (max - min) / 2
+            case NSComparisonResult.OrderedDescending:
+                min = pivot + 1
+                pivot = min + (max - min) / 2
+            case NSComparisonResult.OrderedSame:
+                if let p = namesSearch(kid, key: key) {
+                    return p
+                }
+                dict = kid
+                break kids
+            }
+        } while true
+    } while true
+}
+
+private func nameTableOrder(dict: CGPDFDictionaryRef, key: String) -> NSComparisonResult? {
+    guard let
+        limits = dict[array: "Limits"],
+        left = limits[string: 0],
+        right = limits[string: 1] else {
+            return nil
+    }
+    if key < left {
+        return NSComparisonResult.OrderedAscending
+    } else if right < key {
+        return NSComparisonResult.OrderedDescending
+    } else {
+        return NSComparisonResult.OrderedSame
+    }
+}
+
+private func namesSearch(dict: CGPDFDictionaryRef, key: String) -> CGPDFDictionaryRef? {
+    guard let names = dict[array: "Names"] else {
+        return nil
+    }
+    let count = names.count
+    if count <= 0 || (count & 1) != 0 {
+        return nil
+    }
+
+    var min = 0
+    var max = count - 1
+    var i = max / 2
+    repeat {
+        guard let name = names[string: i * 2] else {
+            return nil
+        }
+        if key < name {
+            max = i - 1
+            i = min + (max - min) / 2
+        } else if name < key {
+            min = i + 1
+            i = min + (max - min) / 2
+        } else /*if name == key*/ {
+            return names[dictionary: i * 2 + 1]?[array: "D"]?[dictionary: 0]
+        }
+    } while true
 }
