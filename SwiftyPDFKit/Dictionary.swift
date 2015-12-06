@@ -110,6 +110,39 @@ extension CGPDFDictionaryRef {
             }
         }
     }
+
+    subscript(array key: String) -> CGPDFArrayRef? {
+        return key.withCString { ckey in
+            var value = CGPDFArrayRef()
+            if withUnsafeMutablePointer(&value, { return CGPDFDictionaryGetArray(self, ckey, $0) }) {
+                return value
+            } else {
+                return nil
+            }
+        }
+    }
+
+    subscript(integer key: String) -> Int? {
+        return key.withCString { ckey in
+            var value = CGPDFInteger()
+            if withUnsafeMutablePointer(&value, { CGPDFDictionaryGetInteger(self, ckey, $0) }) {
+                return value
+            }
+            return nil
+        }
+    }
+
+    subscript(name key: String) -> String? {
+        return key.withCString { ckey in
+            var value = UnsafePointer<Int8>()
+            if withUnsafeMutablePointer(&value, { CGPDFDictionaryGetName(self, ckey, $0) }) {
+                if let s = String.fromCString(value) {
+                    return s
+                }
+            }
+            return nil
+        }
+    }
     
     subscript(string key: String) -> String? {
         return key.withCString { ckey in
