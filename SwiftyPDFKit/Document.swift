@@ -42,6 +42,46 @@ extension CGPDFDocumentRef {
         return CGPDFDocumentGetInfo(self).shallowCopy()
     }
 
+    public var title: String? {
+        return infoString("Title")
+    }
+
+    public var author: String? {
+        return infoString("Author")
+    }
+
+    public var subject: String? {
+        return infoString("Subject")
+    }
+
+    public var keywords: String? {
+        return infoString("Keywords")
+    }
+
+    public var creator: String? {
+        return infoString("Creator")
+    }
+
+    public var producer: String? {
+        return infoString("Producer")
+    }
+
+    public var creationDate: NSDate? {
+        return infoDate("CreationDate")
+    }
+
+    public var modDate: NSDate? {
+        return infoDate("ModDate")
+    }
+
+    public var trapped: String? {
+        let info = CGPDFDocumentGetInfo(self)
+        if info == nil {
+            return nil
+        }
+        return info[name: "Trapped"]
+    }
+
     public var version: PDFVersion {
         var version = PDFVersion(major: 0, minor: 0)
         withUnsafeMutablePointers(&version.major, &version.minor) {
@@ -49,7 +89,7 @@ extension CGPDFDocumentRef {
         }
         return version
     }
-    
+
     public var identifier: (NSData, NSData) {
         let a = CGPDFDocumentGetID(self)
         if CGPDFArrayGetCount(a) == 2 {
@@ -62,7 +102,7 @@ extension CGPDFDocumentRef {
         }
         return (NSData(), NSData())
     }
-    
+
     public var outlines: [OutlineElement] {
         let catalog = CGPDFDocumentGetCatalog(self)
         guard
@@ -76,5 +116,21 @@ extension CGPDFDocumentRef {
         let nameTable = catalog[dictionary: "Names"]?[dictionary: "Dests"]
 
         return ol.outlines(pageIndices, nameTable)
+    }
+
+    private func infoString(key: String) -> String? {
+        let info = CGPDFDocumentGetInfo(self)
+        if info == nil {
+            return nil
+        }
+        return info[string: key]
+    }
+
+    private func infoDate(key: String) -> NSDate? {
+        let info = CGPDFDocumentGetInfo(self)
+        if info == nil {
+            return nil
+        }
+        return info[date: key]
     }
 }

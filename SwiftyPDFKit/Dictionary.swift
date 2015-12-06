@@ -156,6 +156,18 @@ extension CGPDFDictionaryRef {
         }
     }
     
+    subscript(date key: String) -> NSDate? {
+        return key.withCString { ckey in
+            var value = CGPDFStringRef()
+            if withUnsafeMutablePointer(&value, { return CGPDFDictionaryGetString(self, ckey, $0) }) {
+                if let date = CGPDFStringCopyDate(value) {
+                    return date as NSDate
+                }
+            }
+            return nil
+        }
+    }
+    
     subscript(key: String) -> CGPDFObjectRef? {
         return key.withCString { ckey in
             var value = CGPDFObjectRef()

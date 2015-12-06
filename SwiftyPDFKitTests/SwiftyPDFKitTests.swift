@@ -63,6 +63,9 @@ class SwiftyPDFKitTests: XCTestCase {
         XCTAssertEqual(doc.identifier.0.description, "<2592a7e9 5c829b0c b631af5b cbea464a>")
         XCTAssertEqual(doc.identifier.1.description, "<7be1906b 2ff65000 bc5f166e 87791f4a>")
         XCTAssertEqual((doc.info["Title"] as! String), "asiabsdcon.fm5")
+        XCTAssertEqual(doc.title, "asiabsdcon.fm5")
+        XCTAssertEqual(doc.subject, nil)
+        XCTAssertEqual(doc.creator, "FrameMaker 6.0")
 
         let ols = doc.outlines
         XCTAssertEqual(ols.count, 10)
