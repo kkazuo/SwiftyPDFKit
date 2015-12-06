@@ -57,13 +57,11 @@ extension CGPDFDictionaryRef {
             case .Real: 0
                 
             case .Name:
-                var cc: CChar = 0
-                let s: String? = withUnsafeMutablePointer(&cc) { v in
-                    CGPDFObjectGetValue(obj, .Name, v)
-                    return String.fromCString(v)
-                }
-                if let s = s {
-                    dict[key] = s
+                var value: UnsafePointer<Int8> = nil
+                if withUnsafeMutablePointer(&value, { CGPDFObjectGetValue(obj, .Name, $0) }) {
+                    if let s = String.fromCString(value) {
+                        dict[key] = s
+                    }
                 }
                 
             case .String:
