@@ -14,7 +14,6 @@
 		6E9D79DB1C1202E00073B222 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9D79D91C1202E00073B222 /* Errors.swift */; };
 		6E9D79DD1C12047A0073B222 /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9D79DC1C12047A0073B222 /* Dictionary.swift */; };
 		6E9D79DF1C120D7F0073B222 /* PDFVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9D79DE1C120D7F0073B222 /* PDFVersion.swift */; };
-		6E9D79E11C1301EA0073B222 /* PDFObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9D79E01C1301EA0073B222 /* PDFObject.swift */; };
 		6E9D79E31C1322960073B222 /* OutlineElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9D79E21C1322960073B222 /* OutlineElement.swift */; };
 		6E9D79E51C1341860073B222 /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9D79E41C1341860073B222 /* Array.swift */; };
 /* End PBXBuildFile section */
@@ -40,7 +39,6 @@
 		6E9D79D91C1202E00073B222 /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Errors.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		6E9D79DC1C12047A0073B222 /* Dictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Dictionary.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		6E9D79DE1C120D7F0073B222 /* PDFVersion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFVersion.swift; sourceTree = "<group>"; };
-		6E9D79E01C1301EA0073B222 /* PDFObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFObject.swift; sourceTree = "<group>"; };
 		6E9D79E21C1322960073B222 /* OutlineElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutlineElement.swift; sourceTree = "<group>"; };
 		6E9D79E41C1341860073B222 /* Array.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -92,7 +90,6 @@
 				6E9D79D81C1202E00073B222 /* Document.swift */,
 				6E9D79D91C1202E00073B222 /* Errors.swift */,
 				6E9D79E21C1322960073B222 /* OutlineElement.swift */,
-				6E9D79E01C1301EA0073B222 /* PDFObject.swift */,
 				6E9D79DE1C120D7F0073B222 /* PDFVersion.swift */,
 			);
 			path = SwiftyPDFKit;
@@ -218,7 +215,6 @@
 				6E9D79DB1C1202E00073B222 /* Errors.swift in Sources */,
 				6E9D79DA1C1202E00073B222 /* Document.swift in Sources */,
 				6E9D79E51C1341860073B222 /* Array.swift in Sources */,
-				6E9D79E11C1301EA0073B222 /* PDFObject.swift in Sources */,
 				6E9D79DD1C12047A0073B222 /* Dictionary.swift in Sources */,
 				6E9D79DF1C120D7F0073B222 /* PDFVersion.swift in Sources */,
 				6E9D79E31C1322960073B222 /* OutlineElement.swift in Sources */,
