@@ -28,7 +28,7 @@ THE SOFTWARE.
 import Foundation
 import CoreGraphics
 
-extension CGPDFDocumentRef {
+public extension CGPDFDocumentRef {
     
     public var numberOfPages: Int {
         return CGPDFDocumentGetNumberOfPages(self)
