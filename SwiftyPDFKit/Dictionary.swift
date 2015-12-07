@@ -218,9 +218,7 @@ extension CGPDFDictionaryRef {
     }
 
     var pageIndices: [CGPDFObjectRef : Int] {
-        var indices = [CGPDFDictionaryRef : Int]()
-        (_, indices) = self.pageIndicesAux(start: 1, indices: indices)
-        return indices
+        return self.pageIndicesAux(start: 1, indices: [CGPDFDictionaryRef : Int]()).1
     }
 
     private func pageIndicesAux(start start: Int, indices: [CGPDFDictionaryRef : Int]) -> (Int, [CGPDFDictionaryRef : Int]) {
