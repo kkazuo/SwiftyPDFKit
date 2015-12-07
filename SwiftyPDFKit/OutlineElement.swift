@@ -31,11 +31,11 @@ import Foundation
 public struct OutlineElement {
 
     /// アウトラインのタイトル
-    var title: String
+    public let title: String
 
     /// アウトラインのルートからの深さ (0開始)
-    var level: Int
+    public let level: Int
 
     /// ページ番号 (1開始)
-    var page: Int
+    public let page: Int
 }

@@ -83,11 +83,12 @@ public extension CGPDFDocumentRef {
     }
 
     public var version: PDFVersion {
-        var version = PDFVersion(major: 0, minor: 0)
-        withUnsafeMutablePointers(&version.major, &version.minor) {
+        var major: Int32 = 0
+        var minor: Int32 = 0
+        withUnsafeMutablePointers(&major, &minor) {
             CGPDFDocumentGetVersion(self, $0, $1)
         }
-        return version
+        return PDFVersion(major: major, minor: minor)
     }
 
     public var identifier: (NSData, NSData) {

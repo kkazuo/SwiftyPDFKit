@@ -28,8 +28,8 @@ THE SOFTWARE.
 import Foundation
 
 public struct PDFVersion: Equatable {
-    var major: Int32
-    var minor: Int32
+    public let major: Int32
+    public let minor: Int32
 }
 
 public func == (left: PDFVersion, right: PDFVersion) -> Bool {
