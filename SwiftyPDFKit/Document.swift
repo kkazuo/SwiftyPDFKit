@@ -134,7 +134,7 @@ public extension CGPDFDocumentRef {
         return CGPDFDocumentIsUnlocked(self)
     }
 
-    public func unlock(password password: String) -> Bool {
+    public func unlock(password: String) -> Bool {
         return password.withCString { CGPDFDocumentUnlockWithPassword(self, $0) }
     }
 

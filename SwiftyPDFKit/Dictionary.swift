@@ -223,23 +223,25 @@ extension CGPDFDictionaryRef {
         return indices
     }
 
-    private func pageIndicesAux(start start: Int, var indices: [CGPDFDictionaryRef : Int]) -> (Int, [CGPDFDictionaryRef : Int]) {
+    private func pageIndicesAux(start start: Int, indices: [CGPDFDictionaryRef : Int]) -> (Int, [CGPDFDictionaryRef : Int]) {
         guard let kids = self[array: "Kids"] else {
             return (start, indices)
         }
         let max = kids.count
         var st = start
-        for var i = 0; i < max; i++ {
+        var idcs = indices
+        for i in 0..<max {
             guard let k = kids[dictionary: i], t = k[name: "Type"] else {
                 continue
             }
             if t == "Page" {
-                indices[k] = st++
+                idcs[k] = st
+                st += 1
             } else if t == "Pages" {
-                (st, indices) = k.pageIndicesAux(start: st, indices: indices)
+                (st, idcs) = k.pageIndicesAux(start: st, indices: idcs)
             }
         }
-        return (st, indices)
+        return (st, idcs)
     }
 }
 
